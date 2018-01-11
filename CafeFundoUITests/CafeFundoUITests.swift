@@ -2,8 +2,8 @@
 //  CafeFundoUITests.swift
 //  CafeFundoUITests
 //
-//  Created by lackary on 2018/1/11.
-//  Copyright © 2018年 LackLab. All rights reserved.
+//  Created by lackary on 2017/11/5.
+//  Copyright © 2017年 LackaryApp. All rights reserved.
 //
 
 import XCTest
