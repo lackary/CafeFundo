@@ -20,6 +20,7 @@ class PlaceViewController: UIViewController, MKMapViewDelegate, CLLocationManage
     let search_geo_radius_url = "http://192.168.10.66:8080/cafefundo/search/v1/radius"
     
     var locationManager: CLLocationManager = CLLocationManager()
+    var currentAnnotaion = MKPointAnnotation()
     var startLocation: CLLocation!
     var latestlocation: CLLocation!
     
@@ -133,13 +134,19 @@ class PlaceViewController: UIViewController, MKMapViewDelegate, CLLocationManage
         }
         
         
-        
         // 顯示地圖範圍大小
         let currentLocationSpan: MKCoordinateSpan = MKCoordinateSpanMake(latitudeDelta, longitudeDelta)
         // 設置地圖顯示的範圍與中心點座標
-        //let center:CLLocation = CLLocation(latitude: latestlocation.coordinate.latitude, longitude: latestlocation.coordinate.longitude)
+        //let center:CLLocation = CLLocation(latitude: latestlocation.coordinate.latitude, longitude: //latestlocation.coordinate.longitude)
         let currentRegion:MKCoordinateRegion = MKCoordinateRegion(center: latestlocation.coordinate,span: currentLocationSpan)
         mapKitView.setRegion(currentRegion, animated: true)
+        
+        //標示大頭針
+        currentAnnotaion.coordinate = latestlocation.coordinate
+        currentAnnotaion.title = "我的位置"
+        currentAnnotaion.subtitle = "現在的位置"
+        
+        mapKitView.addAnnotation(currentAnnotaion)
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: NSError) {
@@ -187,6 +194,7 @@ class PlaceViewController: UIViewController, MKMapViewDelegate, CLLocationManage
                 }
                 DispatchQueue.main.sync {
                     for index in 0...self.storesNum-1 {
+                        self.setAnnotation(store: self.storeArray[index])
                         self.storeArray[index].picture = UIImagePNGRepresentation(UIImage(named: "ic_local_cafe_36pt")!)
                         if self.storeArray[index].pictureUrl != nil {
                             self.downloadImage(url: self.storeArray[index].pictureUrl!, row: index)
@@ -254,4 +262,13 @@ class PlaceViewController: UIViewController, MKMapViewDelegate, CLLocationManage
         }
     }
     
+    func setAnnotation(store: Store ){
+        let postionLocation = CLLocation(latitude: store.location![1], longitude: store.location![0])
+        //標示大頭針
+        let storeAnnotaion = MKPointAnnotation()
+        storeAnnotaion.coordinate = postionLocation.coordinate
+        storeAnnotaion.title = store.name
+        //currentAnnotaion.subtitle = "現在的位置"
+        mapKitView.addAnnotation(storeAnnotaion)
+    }
 }
