@@ -17,8 +17,8 @@ class PlaceViewController: UIViewController, MKMapViewDelegate, CLLocationManage
     
     var refresher: UIRefreshControl!
     
-    let search_geo_radius_url = "https://192.168.10.66/cafefundo/search/v1/radius"
-    // let search_geo_radius_url = "https://cafefundo.appspot.com/cafefundo/search/v1/radius"
+    //let search_geo_radius_url = "https://192.168.0.104/cafefundo/search/v1/radius"
+    let search_geo_radius_url = "https://cafefundo.appspot.com/cafefundo/search/v1/radius"
     
     var locationManager: CLLocationManager = CLLocationManager()
     var currentAnnotaion = MKPointAnnotation()
