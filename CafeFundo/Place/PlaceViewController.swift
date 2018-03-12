@@ -142,12 +142,13 @@ class PlaceViewController: UIViewController, MKMapViewDelegate, CLLocationManage
         let currentRegion:MKCoordinateRegion = MKCoordinateRegion(center: latestlocation.coordinate,span: currentLocationSpan)
         mapKitView.setRegion(currentRegion, animated: true)
         
+        /*
         //標示大頭針
         currentAnnotaion.coordinate = latestlocation.coordinate
         currentAnnotaion.title = "我的位置"
         currentAnnotaion.subtitle = "現在的位置"
-        
         mapKitView.addAnnotation(currentAnnotaion)
+        */
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: NSError) {
@@ -191,18 +192,24 @@ class PlaceViewController: UIViewController, MKMapViewDelegate, CLLocationManage
                     print("the store number: ", result.number)
                     self.storeArray = result.data
                 } catch let jsonError {
+                    self.storesNum = 0
+                    self.showAlter(message: "Server error: " + jsonError.localizedDescription)
                     print(jsonError)
                 }
                 DispatchQueue.main.sync {
-                    for index in 0...self.storesNum-1 {
-                        self.setAnnotation(store: self.storeArray[index])
-                        self.storeArray[index].picture = UIImagePNGRepresentation(UIImage(named: "ic_local_cafe_36pt")!)
-                        if self.storeArray[index].pictureUrl != nil {
-                            self.downloadImage(url: self.storeArray[index].pictureUrl!, row: index)
+                    if self.storesNum != 0 {
+                        for index in 0...self.storesNum-1 {
+                            self.setAnnotation(store: self.storeArray[index])
+                            self.storeArray[index].picture = UIImagePNGRepresentation(UIImage(named: "ic_local_cafe_36pt")!)
+                            if self.storeArray[index].pictureUrl != nil {
+                                self.downloadImage(url: self.storeArray[index].pictureUrl!, row: index)
+                            } else {
+                                self.storeTableView.reloadData()
+                            }
+
                         }
+                        print("finish")
                     }
-                    print("finish")
-                    //self.storeTableView.reloadData()
                 }
             }
          }
@@ -263,7 +270,7 @@ class PlaceViewController: UIViewController, MKMapViewDelegate, CLLocationManage
         }
     }
     
-    func setAnnotation(store: Store ){
+    func setAnnotation(store: Store ) {
         let postionLocation = CLLocation(latitude: store.location![1], longitude: store.location![0])
         //標示大頭針
         let storeAnnotaion = MKPointAnnotation()
@@ -272,4 +279,19 @@ class PlaceViewController: UIViewController, MKMapViewDelegate, CLLocationManage
         //currentAnnotaion.subtitle = "現在的位置"
         mapKitView.addAnnotation(storeAnnotaion)
     }
+    
+    func showAlter(message: String) {
+        let alertController = UIAlertController(title: "Warning!!", message: message, preferredStyle: .alert)
+        let OKAction = UIAlertAction(title: "OK", style: .default) { (action:UIAlertAction!) in
+            
+            // Code in this block will trigger when OK button tapped.
+            print("Ok button tapped");
+            
+        }
+        
+        alertController.addAction(OKAction)
+        
+        self.present(alertController, animated: true, completion:nil)
+    }
+    
 }
